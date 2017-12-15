@@ -7,15 +7,9 @@ main :: IO ()
 main = do args <- getArgs
           putStrLn (readExpr (args !! 0))
 
-symbol :: Parser Char
-symbol = oneOf "!$%&|*+/:<=>?@^_~#"
-
 readExpr input = case parse parseExpr "lisp" input of
     Left err -> "No match: " ++ show err
     Right val -> "Found val: " ++ showLispVal val
-
-spaces :: Parser ()
-spaces = skipMany1 space
 
 data LispVal = Atom String
              | NegativeAtom String
@@ -37,6 +31,12 @@ showLispVal (Multiply lvs) = (showLispVal2 (head lvs)) ++ " " ++ (showLispVal (M
 showLispVal2 :: LispVal -> String
 showLispVal2 (Plus lvs) = "(" ++ showLispVal (Plus lvs) ++ ")"
 showLispVal2 val = showLispVal val
+
+spaces :: Parser ()
+spaces = skipMany1 space
+
+symbol :: Parser Char
+symbol = oneOf "!$%&|*+/:<=>?@^_~#"
 
 parseAtom :: Parser LispVal
 parseAtom = do first <- letter <|> symbol <|> digit
@@ -79,8 +79,9 @@ parseMultiply = do
     return $ Multiply xs
 
 parseExpr :: Parser LispVal
-parseExpr = try parsePower
-        <|> parseAtom
+parseExpr = --try parsePower
+--        <|> parseAtom
+            parseAtom
         <|> parseNegativeAtom
         <|> try parsePlus
         <|> try parseMultiply
