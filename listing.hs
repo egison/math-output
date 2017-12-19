@@ -38,7 +38,6 @@ showLispVal (Func f lvs) = case f of
                              Atom "/" -> if (length lvs) == 2 then "frac{" ++ (showLispVal (lvs !! 0)) ++ "}{" ++ (showLispVal (lvs !! 1)) ++ "}"
                                                          else (showLispVal f) ++ "(" ++ (showLispValArg lvs) ++ ")"
                              _ -> (showLispVal f) ++ "(" ++ (showLispValArg lvs) ++ ")"
--- showLispVal (Tensor lvs us ds) = "(" ++ (showLispValArg lvs) ++ ")"
 showLispVal (Tensor lvs us ds)
     | us == [] = "(" ++ (showLispValArg lvs) ++ ")"
     | otherwise = "(" ++ (showLispValArg lvs) ++ ")_(" ++ (showLispValArg2 us) ++ ")"
@@ -112,9 +111,6 @@ parseFunction = do
 
 parseTensor :: Parser LispVal
 parseTensor = do
-    -- between lp rp $ Tensor <$> parseList
-    --     where lp = string "[|" >> spaces0
-    --           rp = spaces0 >> string "|]"
     string "[|"
     spaces0
     xs <- parseList
